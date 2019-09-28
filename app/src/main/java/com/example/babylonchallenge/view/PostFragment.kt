@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.babylonchallenge.PostViewModel
 import com.example.babylonchallenge.PostViewModelFactory
 
@@ -17,6 +18,7 @@ import com.example.babylonchallenge.R
 import com.example.babylonchallenge.di.DaggerAppComponent
 import com.example.babylonchallenge.di.NetworkModule
 import com.example.babylonchallenge.model.Post
+import kotlinx.android.synthetic.main.fragment_post.*
 import javax.inject.Inject
 
 
@@ -48,7 +50,13 @@ class PostFragment : Fragment() {
         getpostInfo?.observe(this,Observer<List<Post>>{
             t->
             Log.d("posttitle",t[0].title)
+            postadapter(t)
         })
+    }
+
+    private fun postadapter(t:List<Post>){
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = PostAdapter(t)
     }
 
 }
