@@ -1,7 +1,8 @@
-package com.example.babylonchallenge
+package com.example.babylonchallenge.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.babylonchallenge.R
 
 class MainActivity : AppCompatActivity() {
 
