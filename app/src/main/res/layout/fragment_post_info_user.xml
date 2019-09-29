@@ -44,12 +44,21 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_comments"/>
         <TextView
                 android:text="COMMENTS"
-                android:layout_width="132dp"
-                android:layout_height="47dp"
-                android:id="@+id/tv_comments" app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="8dp" android:layout_marginBottom="52dp"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.539"/>
+                android:layout_width="102dp"
+                android:layout_height="45dp"
+                android:id="@+id/tv_comments"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="56dp" android:layout_marginBottom="56dp"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+                android:text="All Comments::"
+                android:textAlignment="textEnd"
+                android:layout_width="116dp"
+                android:layout_height="48dp"
+                android:id="@+id/textView" app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="8dp" android:layout_marginBottom="52dp"
+                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toStartOf="@+id/tv_comments"
+                android:layout_marginEnd="8dp" app:layout_constraintHorizontal_bias="0.677"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

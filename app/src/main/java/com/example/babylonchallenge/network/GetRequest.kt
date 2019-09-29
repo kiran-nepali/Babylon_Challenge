@@ -1,6 +1,7 @@
 package com.example.babylonchallenge.network
 
 import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -16,4 +17,8 @@ interface GetRequest {
 
     @GET("users")
     fun getUserInfoRequest(@Query("id") id:Int):Observable<List<Users>>//Querying particular user with userid
+
+    @GET("comments")
+    fun getNumOfCommentsRequest(@Query("postId") postId:Int):Observable<List<Comments>>//Querying comment of that id
+
 }

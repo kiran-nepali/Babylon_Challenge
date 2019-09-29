@@ -16,6 +16,7 @@ import com.example.babylonchallenge.UserPostViewModelFactory
 import com.example.babylonchallenge.di.DaggerAppComponent
 import com.example.babylonchallenge.di.NetworkModule
 import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
 import kotlinx.android.synthetic.main.fragment_post_info_user.*
 import javax.inject.Inject
@@ -62,6 +63,15 @@ class PostInfoUserFragment : Fragment() {
             t->
             tv_authorName.text = t[0].name
         })
+
+        if (postIdfromBundle != null) {
+            userPostViewModel.getComments(postIdfromBundle)
+        }
+        userPostViewModel.getCommentsInfo().observe(this,Observer<List<Comments>>{
+            t->
+            tv_comments.text = t.size.toString()
+        })
+
 
     }
 

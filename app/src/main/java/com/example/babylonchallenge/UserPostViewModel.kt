@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
 import com.example.babylonchallenge.network.GetRequest
 import io.reactivex.Observable
@@ -18,6 +19,7 @@ class UserPostViewModel @Inject constructor(val clientInterface:GetRequest):View
 
     var userpostinfo:MutableLiveData<List<Post>> = MutableLiveData()
     var userIdinfo:MutableLiveData<List<Users>> = MutableLiveData()
+    var commentinfo:MutableLiveData<List<Comments>> = MutableLiveData()
     val compositeDisposable = CompositeDisposable()
 
     fun individualPost(postId:Int){
@@ -82,5 +84,37 @@ class UserPostViewModel @Inject constructor(val clientInterface:GetRequest):View
 
     fun userIdInfo():MutableLiveData<List<Users>>{
         return userIdinfo
+    }
+
+    fun getComments(postId: Int){
+        val call:Observable<List<Comments>> = clientInterface.getNumOfCommentsRequest(postId)
+        call
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(CommentObserver())
+    }
+
+    private fun CommentObserver():Observer<List<Comments>>{
+        return object: Observer<List<Comments>>{
+            override fun onComplete() {
+                Log.d("CommentsObserver","All items emitted")
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                compositeDisposable.add(d)
+            }
+
+            override fun onNext(t: List<Comments>) {
+                commentinfo?.value = t
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d("CommentError",e.message)
+            }
+        }
+    }
+
+    fun getCommentsInfo():MutableLiveData<List<Comments>>{
+        return commentinfo
     }
 }
