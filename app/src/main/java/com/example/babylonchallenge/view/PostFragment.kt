@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -56,7 +57,21 @@ class PostFragment : Fragment() {
 
     private fun postadapter(t:List<Post>){
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = PostAdapter(t)
+        recyclerView.adapter = PostAdapter(t,object : onPostClickListener{
+            override fun onPostClicked(post: Post) {
+                val fragmentManager = activity?.supportFragmentManager
+                val transaction = fragmentManager?.beginTransaction()
+                val args = Bundle()
+                args.putInt("postId",post.id)
+                args.putInt("userId",post.userId)
+                Toast.makeText(context,"clicked",Toast.LENGTH_SHORT).show()
+                val userPostFragment = PostInfoUserFragment()
+                userPostFragment.arguments = args
+                transaction?.replace(R.id.fragmentContainer,userPostFragment)
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
+        })
     }
 
 }

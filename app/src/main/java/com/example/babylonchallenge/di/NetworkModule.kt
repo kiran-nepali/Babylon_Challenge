@@ -1,6 +1,8 @@
 package com.example.babylonchallenge.di
 
 import com.example.babylonchallenge.PostViewModelFactory
+import com.example.babylonchallenge.UserPostViewModel
+import com.example.babylonchallenge.UserPostViewModelFactory
 import com.example.babylonchallenge.common.Constants
 import com.example.babylonchallenge.network.GetRequest
 import dagger.Module
@@ -54,5 +56,10 @@ class NetworkModule {
         return PostViewModelFactory(clientInterface)
     }
 
+    @Provides
+    @Singleton
+    fun provideUserPostViewModelFactory(clientInterface: GetRequest):UserPostViewModelFactory{
+        return UserPostViewModelFactory(clientInterface)
+    }
 
 }
