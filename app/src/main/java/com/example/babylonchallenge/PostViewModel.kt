@@ -16,7 +16,7 @@ import javax.inject.Inject
 class PostViewModel @Inject constructor(val clientInterface: GetRequest) : ViewModel(){
 
     val postObserver = PostObserver()
-    private var postData:MutableLiveData<List<Post>>?= MutableLiveData()
+    var postData:MutableLiveData<List<Post>>?= MutableLiveData()
     val compositeDisposable = CompositeDisposable()
     fun postInfo() {
         val call: Observable<List<Post>> = clientInterface.getPostRequest()
