@@ -1,10 +1,9 @@
-package com.example.babylonchallenge.di
+package com.example.babylonchallenge.di.module
 
 import com.example.babylonchallenge.PostViewModelFactory
-import com.example.babylonchallenge.UserPostViewModel
 import com.example.babylonchallenge.UserPostViewModelFactory
 import com.example.babylonchallenge.common.Constants
-import com.example.babylonchallenge.network.GetRequest
+import com.example.babylonchallenge.network.WebServices
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -12,21 +11,19 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
-
+class AppModule {
     @Provides
     @Singleton
-    fun provideClientInterface(retrofit: Retrofit):GetRequest{
-        return retrofit.create(GetRequest::class.java)
+    fun provideClientInterface(retrofit: Retrofit): WebServices {
+        return retrofit.create(WebServices::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient):Retrofit{
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -37,7 +34,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor):OkHttpClient{
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
@@ -46,19 +43,19 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHttPIntercepter():HttpLoggingInterceptor{
+    fun provideHttPInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor()
     }
 
     @Provides
     @Singleton
-    fun providePostViewModelFactory(clientInterface:GetRequest):PostViewModelFactory{
+    fun providePostViewModelFactory(clientInterface: WebServices): PostViewModelFactory {
         return PostViewModelFactory(clientInterface)
     }
 
     @Provides
     @Singleton
-    fun provideUserPostViewModelFactory(clientInterface: GetRequest):UserPostViewModelFactory{
+    fun provideUserPostViewModelFactory(clientInterface: WebServices): UserPostViewModelFactory {
         return UserPostViewModelFactory(clientInterface)
     }
 

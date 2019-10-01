@@ -11,10 +11,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.example.babylonchallenge.R
-import com.example.babylonchallenge.UserPostViewModel
+import com.example.babylonchallenge.PostDetailViewModel
 import com.example.babylonchallenge.UserPostViewModelFactory
-import com.example.babylonchallenge.di.DaggerAppComponent
-import com.example.babylonchallenge.di.NetworkModule
+import com.example.babylonchallenge.di.component.DaggerAppComponent
+import com.example.babylonchallenge.di.module.AppModule
 import com.example.babylonchallenge.model.Post
 import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
@@ -26,7 +26,7 @@ class PostInfoUserFragment : Fragment() {
 
     @Inject
     lateinit var userPostViewModelFactory: UserPostViewModelFactory
-    private lateinit var userPostViewModel: UserPostViewModel
+    private lateinit var postDetailViewModel: PostDetailViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,16 +39,16 @@ class PostInfoUserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         DaggerAppComponent.builder()
-            .networkModule(NetworkModule())
+            .appModule(AppModule())
             .build()
             .inject(this)
 
         val postIdfromBundle = arguments?.getInt("postId")
-        userPostViewModel = ViewModelProviders.of(this,userPostViewModelFactory).get(UserPostViewModel::class.java)
+        postDetailViewModel = ViewModelProviders.of(this,userPostViewModelFactory).get(PostDetailViewModel::class.java)
         if (postIdfromBundle != null) {
-            userPostViewModel.individualPost(postIdfromBundle)
+            postDetailViewModel.individualPost(postIdfromBundle)
         }
-        userPostViewModel.userpostinfo().observe(this,Observer<List<Post>>{
+        postDetailViewModel.userpostinfo().observe(this,Observer<List<Post>>{
             t->
             Log.d("posttitle",t[0].title)
             tv_postTitle.text = t[0].title
@@ -57,17 +57,17 @@ class PostInfoUserFragment : Fragment() {
 
         val userIdFromBundle = arguments?.getInt("userId")
         if (userIdFromBundle != null) {
-            userPostViewModel.getUserId(userIdFromBundle)
+            postDetailViewModel.getUserId(userIdFromBundle)
         }
-        userPostViewModel.userIdInfo().observe(this,Observer<List<Users>>{
+        postDetailViewModel.userIdInfo().observe(this,Observer<List<Users>>{
             t->
             tv_authorName.text = t[0].name
         })
 
         if (postIdfromBundle != null) {
-            userPostViewModel.getComments(postIdfromBundle)
+            postDetailViewModel.getComments(postIdfromBundle)
         }
-        userPostViewModel.getCommentsInfo().observe(this,Observer<List<Comments>>{
+        postDetailViewModel.getCommentsInfo().observe(this,Observer<List<Comments>>{
             t->
             tv_comments.text = t.size.toString()
         })

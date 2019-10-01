@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.babylonchallenge.model.Post
 import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
-import com.example.babylonchallenge.network.GetRequest
+import com.example.babylonchallenge.network.WebServices
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -15,7 +15,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class UserPostViewModel @Inject constructor(val clientInterface:GetRequest):ViewModel() {
+class PostDetailViewModel @Inject constructor(val clientInterface:WebServices):ViewModel() {
 
     var userpostinfo:MutableLiveData<List<Post>> = MutableLiveData()
     var userIdinfo:MutableLiveData<List<Users>> = MutableLiveData()

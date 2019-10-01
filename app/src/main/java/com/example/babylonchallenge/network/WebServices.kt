@@ -4,13 +4,14 @@ import com.example.babylonchallenge.model.Post
 import com.example.babylonchallenge.model.comments.Comments
 import com.example.babylonchallenge.model.users.Users
 import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface GetRequest {
+interface WebServices {
 
     @GET("posts")
-    fun getPostRequest():Observable<List<Post>>
+    fun getPosts():Single<List<Post>>
 
     @GET("posts")
     fun getPostInfoRequest(@Query("id") id:Int):Observable<List<Post>> //Querying particular post with post id

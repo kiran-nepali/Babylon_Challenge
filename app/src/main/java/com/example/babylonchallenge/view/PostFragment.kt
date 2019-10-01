@@ -2,22 +2,19 @@ package com.example.babylonchallenge.view
 
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.babylonchallenge.PostViewModel
 import com.example.babylonchallenge.PostViewModelFactory
-
 import com.example.babylonchallenge.R
-import com.example.babylonchallenge.di.DaggerAppComponent
-import com.example.babylonchallenge.di.NetworkModule
+import com.example.babylonchallenge.di.component.DaggerAppComponent
+import com.example.babylonchallenge.di.module.AppModule
 import com.example.babylonchallenge.model.Post
 import kotlinx.android.synthetic.main.fragment_post.*
 import javax.inject.Inject
@@ -28,50 +25,53 @@ class PostFragment : Fragment() {
     @Inject
     lateinit var postViewModelFactory: PostViewModelFactory
 
-    private lateinit var viewmodel:PostViewModel
+    private lateinit var viewModel: PostViewModel
+
+    private lateinit var postAdapter: PostAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_post, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         DaggerAppComponent.builder()
-            .networkModule(NetworkModule())
+            .appModule(AppModule())
             .build()
             .inject(this)
 
-        viewmodel = ViewModelProviders.of(this,postViewModelFactory).get(PostViewModel::class.java)
-        viewmodel.postInfo()
-        val getpostInfo:MutableLiveData<List<Post>>?= viewmodel.postData()
-        getpostInfo?.observe(this,Observer<List<Post>>{
-            t->
-            Log.d("posttitle",t[0].title)
-            postadapter(t)
+        viewModel = ViewModelProviders.of(this, postViewModelFactory).get(PostViewModel::class.java)
+        viewModel.postData.observe(this, Observer<List<Post>> { posts ->
+            displayPosts(posts)
         })
-    }
-
-    private fun postadapter(t:List<Post>){
+        viewModel.errors.observe(this, Observer {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        })
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = PostAdapter(t,object : onPostClickListener{
+        postAdapter = PostAdapter(object : PostClickListener {
             override fun onPostClicked(post: Post) {
                 val fragmentManager = activity?.supportFragmentManager
                 val transaction = fragmentManager?.beginTransaction()
                 val args = Bundle()
-                args.putInt("postId",post.id)
-                args.putInt("userId",post.userId)
-                Toast.makeText(context,"clicked",Toast.LENGTH_SHORT).show()
+                args.putInt("postId", post.id)
+                args.putInt("userId", post.userId)
                 val userPostFragment = PostInfoUserFragment()
                 userPostFragment.arguments = args
-                transaction?.replace(R.id.fragmentContainer,userPostFragment)
+                transaction?.replace(R.id.fragmentContainer, userPostFragment)
                     ?.addToBackStack(null)
                     ?.commit()
             }
         })
+        recyclerView.adapter = postAdapter
+
+        viewModel.getPosts()
+    }
+
+    private fun displayPosts(posts: List<Post>) {
+        postAdapter.setItems(posts)
     }
 
 }
