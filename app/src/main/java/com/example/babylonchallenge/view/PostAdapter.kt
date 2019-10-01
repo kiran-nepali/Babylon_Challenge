@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.babylonchallenge.R
-import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.data.model.Post
 import kotlinx.android.synthetic.main.cardview.view.*
 
 class PostAdapter(private val listener:PostClickListener):RecyclerView.Adapter<PostViewHolder>() {

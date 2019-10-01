@@ -2,28 +2,31 @@ package com.example.babylonchallenge
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.data.model.Post
+import com.example.babylonchallenge.data.repository.PostRepository
 import com.example.babylonchallenge.network.WebServices
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PostViewModel @Inject constructor(private val webServices: WebServices) : ViewModel() {
+class PostViewModel @Inject constructor(private val postRepository: PostRepository) : ViewModel() {
 
     val postData: MutableLiveData<List<Post>> = MutableLiveData()
-    val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
     var errors: MutableLiveData<String> = MutableLiveData()
     fun getPosts() {
         compositeDisposable.add(
-            webServices.getPosts().subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            postRepository.getPosts()
                 .subscribe({ posts ->
                     postData.value = posts
                 }, {
                     errors.value = it.localizedMessage
                 })
         )
+    }
+
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 
 }

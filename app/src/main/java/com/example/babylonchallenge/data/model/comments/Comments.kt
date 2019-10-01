@@ -1,4 +1,4 @@
-package com.example.babylonchallenge.model.comments
+package com.example.babylonchallenge.data.model.comments
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,8 +1,8 @@
 package com.example.babylonchallenge.network
 
-import com.example.babylonchallenge.model.Post
-import com.example.babylonchallenge.model.comments.Comments
-import com.example.babylonchallenge.model.users.Users
+import com.example.babylonchallenge.data.model.Post
+import com.example.babylonchallenge.data.model.comments.Comments
+import com.example.babylonchallenge.data.model.users.Users
 import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -14,12 +14,12 @@ interface WebServices {
     fun getPosts():Single<List<Post>>
 
     @GET("posts")
-    fun getPostInfoRequest(@Query("id") id:Int):Observable<List<Post>> //Querying particular post with post id
+    fun getPostInfo(@Query("id") id:Int):Observable<List<Post>>
 
     @GET("users")
-    fun getUserInfoRequest(@Query("id") id:Int):Observable<List<Users>>//Querying particular user with userid
+    fun getUserInfo(@Query("id") id:Int):Observable<List<Users>>
 
     @GET("comments")
-    fun getNumOfCommentsRequest(@Query("postId") postId:Int):Observable<List<Comments>>//Querying comment of that id
+    fun getNumOfComments(@Query("postId") postId:Int):Observable<List<Comments>>
 
 }

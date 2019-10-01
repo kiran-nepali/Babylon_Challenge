@@ -3,37 +3,33 @@ package com.example.babylonchallenge
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.babylonchallenge.model.Post
-import com.example.babylonchallenge.model.comments.Comments
-import com.example.babylonchallenge.model.users.Users
-import com.example.babylonchallenge.network.WebServices
+import com.example.babylonchallenge.data.model.Post
+import com.example.babylonchallenge.data.model.comments.Comments
+import com.example.babylonchallenge.data.model.users.Users
+import com.example.babylonchallenge.data.repository.PostRepository
 import io.reactivex.Observable
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PostDetailViewModel @Inject constructor(val clientInterface:WebServices):ViewModel() {
+class PostDetailViewModel @Inject constructor(private val repository: PostRepository) : ViewModel() {
 
-    var userpostinfo:MutableLiveData<List<Post>> = MutableLiveData()
-    var userIdinfo:MutableLiveData<List<Users>> = MutableLiveData()
-    var commentinfo:MutableLiveData<List<Comments>> = MutableLiveData()
+    var userpostinfo: MutableLiveData<List<Post>> = MutableLiveData()
+    var userIdinfo: MutableLiveData<List<Users>> = MutableLiveData()
+    var commentinfo: MutableLiveData<List<Comments>> = MutableLiveData()
     val compositeDisposable = CompositeDisposable()
 
-    fun individualPost(postId:Int){
-        val call:Observable<List<Post>> = clientInterface.getPostInfoRequest(postId)
+    fun individualPost(postId: Int) {
+        val call: Observable<List<Post>> = repository.getPostInfo(postId)
         call
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(IndividualPostObserver())
     }
 
-    private fun IndividualPostObserver():Observer<List<Post>>{
-        return object: Observer<List<Post>>{
+    private fun IndividualPostObserver(): Observer<List<Post>> {
+        return object : Observer<List<Post>> {
             override fun onComplete() {
-                Log.d("IndividualPostEmission","All items emitted")
+                Log.d("IndividualPostEmission", "All items emitted")
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -45,27 +41,25 @@ class PostDetailViewModel @Inject constructor(val clientInterface:WebServices):V
             }
 
             override fun onError(e: Throwable) {
-                Log.d("IndividualPostErrormsg",e.message)
+                Log.d("IndividualPostErrormsg", e.message)
             }
         }
     }
 
-    fun userpostinfo():MutableLiveData<List<Post>>{
+    fun userpostinfo(): MutableLiveData<List<Post>> {
         return userpostinfo
     }
 
-    fun getUserId(userId:Int){
-        val call:Observable<List<Users>> = clientInterface.getUserInfoRequest(userId)
+    fun getUserId(userId: Int) {
+        val call: Observable<List<Users>> = repository.getUserInfo(userId)
         call
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(IndividualUserObserver())
     }
 
-    private fun IndividualUserObserver():Observer<List<Users>>{
-        return object: Observer<List<Users>>{
+    private fun IndividualUserObserver(): Observer<List<Users>> {
+        return object : Observer<List<Users>> {
             override fun onComplete() {
-                Log.d("Users","All items emmited")
+                Log.d("Users", "All items emmited")
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -77,27 +71,25 @@ class PostDetailViewModel @Inject constructor(val clientInterface:WebServices):V
             }
 
             override fun onError(e: Throwable) {
-                Log.d("UserObserverError",e.message)
+                Log.d("UserObserverError", e.message)
             }
         }
     }
 
-    fun userIdInfo():MutableLiveData<List<Users>>{
+    fun userIdInfo(): MutableLiveData<List<Users>> {
         return userIdinfo
     }
 
-    fun getComments(postId: Int){
-        val call:Observable<List<Comments>> = clientInterface.getNumOfCommentsRequest(postId)
+    fun getComments(postId: Int) {
+        val call: Observable<List<Comments>> = repository.getNumOfComments(postId)
         call
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe(CommentObserver())
     }
 
-    private fun CommentObserver():Observer<List<Comments>>{
-        return object: Observer<List<Comments>>{
+    private fun CommentObserver(): Observer<List<Comments>> {
+        return object : Observer<List<Comments>> {
             override fun onComplete() {
-                Log.d("CommentsObserver","All items emitted")
+                Log.d("CommentsObserver", "All items emitted")
             }
 
             override fun onSubscribe(d: Disposable) {
@@ -105,16 +97,16 @@ class PostDetailViewModel @Inject constructor(val clientInterface:WebServices):V
             }
 
             override fun onNext(t: List<Comments>) {
-                commentinfo?.value = t
+                commentinfo.value = t
             }
 
             override fun onError(e: Throwable) {
-                Log.d("CommentError",e.message)
+                Log.d("CommentError", e.message)
             }
         }
     }
 
-    fun getCommentsInfo():MutableLiveData<List<Comments>>{
+    fun getCommentsInfo(): MutableLiveData<List<Comments>> {
         return commentinfo
     }
 }

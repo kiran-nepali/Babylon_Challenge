@@ -12,12 +12,12 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.example.babylonchallenge.R
 import com.example.babylonchallenge.PostDetailViewModel
-import com.example.babylonchallenge.UserPostViewModelFactory
+import com.example.babylonchallenge.PostDetailViewModelFactory
 import com.example.babylonchallenge.di.component.DaggerAppComponent
 import com.example.babylonchallenge.di.module.AppModule
-import com.example.babylonchallenge.model.Post
-import com.example.babylonchallenge.model.comments.Comments
-import com.example.babylonchallenge.model.users.Users
+import com.example.babylonchallenge.data.model.Post
+import com.example.babylonchallenge.data.model.comments.Comments
+import com.example.babylonchallenge.data.model.users.Users
 import kotlinx.android.synthetic.main.fragment_post_info_user.*
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class PostInfoUserFragment : Fragment() {
 
     @Inject
-    lateinit var userPostViewModelFactory: UserPostViewModelFactory
+    lateinit var postDetailViewModelFactory: PostDetailViewModelFactory
     private lateinit var postDetailViewModel: PostDetailViewModel
 
     override fun onCreateView(
@@ -44,7 +44,7 @@ class PostInfoUserFragment : Fragment() {
             .inject(this)
 
         val postIdfromBundle = arguments?.getInt("postId")
-        postDetailViewModel = ViewModelProviders.of(this,userPostViewModelFactory).get(PostDetailViewModel::class.java)
+        postDetailViewModel = ViewModelProviders.of(this,postDetailViewModelFactory).get(PostDetailViewModel::class.java)
         if (postIdfromBundle != null) {
             postDetailViewModel.individualPost(postIdfromBundle)
         }

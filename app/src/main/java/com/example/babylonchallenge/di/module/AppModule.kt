@@ -1,8 +1,10 @@
 package com.example.babylonchallenge.di.module
 
 import com.example.babylonchallenge.PostViewModelFactory
-import com.example.babylonchallenge.UserPostViewModelFactory
+import com.example.babylonchallenge.PostDetailViewModelFactory
 import com.example.babylonchallenge.common.Constants
+import com.example.babylonchallenge.data.repository.PostRepository
+import com.example.babylonchallenge.data.repository.PostRepositoryImpl
 import com.example.babylonchallenge.network.WebServices
 import dagger.Module
 import dagger.Provides
@@ -46,17 +48,22 @@ class AppModule {
     fun provideHttPInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor()
     }
-
     @Provides
     @Singleton
-    fun providePostViewModelFactory(clientInterface: WebServices): PostViewModelFactory {
-        return PostViewModelFactory(clientInterface)
+    fun providePostRepository(webServices: WebServices): PostRepository {
+        return PostRepositoryImpl(webServices)
     }
 
     @Provides
     @Singleton
-    fun provideUserPostViewModelFactory(clientInterface: WebServices): UserPostViewModelFactory {
-        return UserPostViewModelFactory(clientInterface)
+    fun providePostViewModelFactory(postRepository: PostRepository): PostViewModelFactory {
+        return PostViewModelFactory(postRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserPostViewModelFactory(postRepository: PostRepository): PostDetailViewModelFactory {
+        return PostDetailViewModelFactory(postRepository)
     }
 
 }

@@ -15,7 +15,7 @@ import com.example.babylonchallenge.PostViewModelFactory
 import com.example.babylonchallenge.R
 import com.example.babylonchallenge.di.component.DaggerAppComponent
 import com.example.babylonchallenge.di.module.AppModule
-import com.example.babylonchallenge.model.Post
+import com.example.babylonchallenge.data.model.Post
 import kotlinx.android.synthetic.main.fragment_post.*
 import javax.inject.Inject
 

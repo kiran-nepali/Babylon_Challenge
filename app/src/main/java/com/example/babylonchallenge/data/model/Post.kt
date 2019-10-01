@@ -1,4 +1,4 @@
-package com.example.babylonchallenge.model
+package com.example.babylonchallenge.data.model
 import com.google.gson.annotations.SerializedName
 
 data class Post (

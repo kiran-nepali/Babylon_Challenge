@@ -1,4 +1,4 @@
-package com.example.babylonchallenge.model.users
+package com.example.babylonchallenge.data.model.users
 
 import com.google.gson.annotations.SerializedName
 
