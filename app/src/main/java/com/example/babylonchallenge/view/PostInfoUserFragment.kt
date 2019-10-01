@@ -32,7 +32,6 @@ class PostInfoUserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_post_info_user, container, false)
     }
 
@@ -48,28 +47,28 @@ class PostInfoUserFragment : Fragment() {
         if (postIdfromBundle != null) {
             postDetailViewModel.individualPost(postIdfromBundle)
         }
-        postDetailViewModel.userpostinfo().observe(this,Observer<List<Post>>{
-            t->
-            Log.d("posttitle",t[0].title)
-            tv_postTitle.text = t[0].title
-            tv_postBody.text = t[0].body
+        postDetailViewModel.userpostinfo.observe(this,Observer<List<Post>>{
+            post->
+            tv_postTitle.text = post[0].title
+            tv_postBody.text = post[0].body
         })
 
         val userIdFromBundle = arguments?.getInt("userId")
         if (userIdFromBundle != null) {
             postDetailViewModel.getUserId(userIdFromBundle)
         }
-        postDetailViewModel.userIdInfo().observe(this,Observer<List<Users>>{
-            t->
-            tv_authorName.text = t[0].name
+        postDetailViewModel.userIdinfo.observe(this,Observer<List<Users>>{
+            username->
+            tv_authorName.text = username[0].name
         })
+//
 
         if (postIdfromBundle != null) {
             postDetailViewModel.getComments(postIdfromBundle)
         }
-        postDetailViewModel.getCommentsInfo().observe(this,Observer<List<Comments>>{
-            t->
-            tv_comments.text = t.size.toString()
+        postDetailViewModel.commentinfo.observe(this,Observer<List<Comments>>{
+            numOfcomments->
+            tv_comments.text = numOfcomments.size.toString()
         })
 
 

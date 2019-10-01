@@ -9,10 +9,10 @@ import io.reactivex.Single
 interface PostRepository{
     fun getPosts() : Single<List<Post>>
 
-    fun getPostInfo(id: Int) : Observable<List<Post>>
+    fun getPostInfo(id: Int) : Single<List<Post>>
 
-    fun getUserInfo(id: Int) : Observable<List<Users>>
+    fun getUserInfo(id: Int) : Single<List<Users>>
 
 
-    fun getNumOfComments(postId: Int): Observable<List<Comments>>
+    fun getNumOfComments(postId: Int): Single<List<Comments>>
 }

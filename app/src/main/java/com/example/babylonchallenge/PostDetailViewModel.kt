@@ -15,98 +15,53 @@ import javax.inject.Inject
 
 class PostDetailViewModel @Inject constructor(private val repository: PostRepository) : ViewModel() {
 
-    var userpostinfo: MutableLiveData<List<Post>> = MutableLiveData()
-    var userIdinfo: MutableLiveData<List<Users>> = MutableLiveData()
-    var commentinfo: MutableLiveData<List<Comments>> = MutableLiveData()
-    val compositeDisposable = CompositeDisposable()
+    val userpostinfo: MutableLiveData<List<Post>> = MutableLiveData()
+    var errors: MutableLiveData<String> = MutableLiveData()
+    val userIdinfo: MutableLiveData<List<Users>> = MutableLiveData()
+    val commentinfo: MutableLiveData<List<Comments>> = MutableLiveData()
+    private val compositeDisposable = CompositeDisposable()
 
     fun individualPost(postId: Int) {
-        val call: Observable<List<Post>> = repository.getPostInfo(postId)
-        call
-            .subscribe(IndividualPostObserver())
-    }
-
-    private fun IndividualPostObserver(): Observer<List<Post>> {
-        return object : Observer<List<Post>> {
-            override fun onComplete() {
-                Log.d("IndividualPostEmission", "All items emitted")
-            }
-
-            override fun onSubscribe(d: Disposable) {
-                compositeDisposable.add(d)
-            }
-
-            override fun onNext(t: List<Post>) {
-                userpostinfo?.value = t
-            }
-
-            override fun onError(e: Throwable) {
-                Log.d("IndividualPostErrormsg", e.message)
-            }
-        }
-    }
-
-    fun userpostinfo(): MutableLiveData<List<Post>> {
-        return userpostinfo
+        compositeDisposable.add(
+        repository.getPostInfo(postId)
+            .subscribe({posts->
+                userpostinfo.value = posts
+            },{
+                error->
+                errors.value = error.localizedMessage
+            })
+        )
     }
 
     fun getUserId(userId: Int) {
-        val call: Observable<List<Users>> = repository.getUserInfo(userId)
-        call
-            .subscribe(IndividualUserObserver())
-    }
-
-    private fun IndividualUserObserver(): Observer<List<Users>> {
-        return object : Observer<List<Users>> {
-            override fun onComplete() {
-                Log.d("Users", "All items emmited")
-            }
-
-            override fun onSubscribe(d: Disposable) {
-                compositeDisposable.add(d)
-            }
-
-            override fun onNext(t: List<Users>) {
-                userIdinfo?.value = t
-            }
-
-            override fun onError(e: Throwable) {
-                Log.d("UserObserverError", e.message)
-            }
-        }
-    }
-
-    fun userIdInfo(): MutableLiveData<List<Users>> {
-        return userIdinfo
+        compositeDisposable.add(
+        repository.getUserInfo(userId)
+            .subscribe({
+                user ->
+                userIdinfo.value = user
+            },{
+                error ->
+                errors.value = error.localizedMessage
+            })
+        )
     }
 
     fun getComments(postId: Int) {
-        val call: Observable<List<Comments>> = repository.getNumOfComments(postId)
-        call
-            .subscribe(CommentObserver())
+        compositeDisposable.add(
+        repository.getNumOfComments(postId)
+            .subscribe({
+                comments->
+                commentinfo.value = comments
+            },{
+                error->
+                errors.value = error.localizedMessage
+            })
+        )
     }
 
-    private fun CommentObserver(): Observer<List<Comments>> {
-        return object : Observer<List<Comments>> {
-            override fun onComplete() {
-                Log.d("CommentsObserver", "All items emitted")
-            }
-
-            override fun onSubscribe(d: Disposable) {
-                compositeDisposable.add(d)
-            }
-
-            override fun onNext(t: List<Comments>) {
-                commentinfo.value = t
-            }
-
-            override fun onError(e: Throwable) {
-                Log.d("CommentError", e.message)
-            }
-        }
+    override fun onCleared() {
+        compositeDisposable.clear()
+        super.onCleared()
     }
 
-    fun getCommentsInfo(): MutableLiveData<List<Comments>> {
-        return commentinfo
-    }
 }

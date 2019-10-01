@@ -14,12 +14,12 @@ interface WebServices {
     fun getPosts():Single<List<Post>>
 
     @GET("posts")
-    fun getPostInfo(@Query("id") id:Int):Observable<List<Post>>
+    fun getPostInfo(@Query("id") id:Int):Single<List<Post>>
 
     @GET("users")
-    fun getUserInfo(@Query("id") id:Int):Observable<List<Users>>
+    fun getUserInfo(@Query("id") id:Int):Single<List<Users>>
 
     @GET("comments")
-    fun getNumOfComments(@Query("postId") postId:Int):Observable<List<Comments>>
+    fun getNumOfComments(@Query("postId") postId:Int):Single<List<Comments>>
 
 }
