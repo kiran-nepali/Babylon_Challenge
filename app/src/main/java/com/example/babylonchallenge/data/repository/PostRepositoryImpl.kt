@@ -11,15 +11,11 @@ class PostRepositoryImpl @Inject constructor(private val webServices: WebService
     override fun getPosts() =
         webServices.getPosts().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
-    override fun getPostInfo(id: Int) =
-        webServices.getPostInfo(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    override fun getUsers(id: Int) =
+        webServices.getUsers(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
-    override fun getUserInfo(id: Int) =
-        webServices.getUserInfo(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-
-
-    override fun getNumOfComments(postId: Int) =
-        webServices.getNumOfComments(postId).subscribeOn(Schedulers.io()).observeOn(
+    override fun getComments(postId: Int) =
+        webServices.getComments(postId).subscribeOn(Schedulers.io()).observeOn(
             AndroidSchedulers.mainThread()
         )
 

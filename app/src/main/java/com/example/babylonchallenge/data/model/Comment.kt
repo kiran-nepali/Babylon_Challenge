@@ -3,7 +3,7 @@ package com.example.babylonchallenge.data.model.comments
 import com.google.gson.annotations.SerializedName
 
 
-data class Comments (
+data class Comment (
 
 	@SerializedName("postId") val postId : Int,
 	@SerializedName("id") val id : Int,

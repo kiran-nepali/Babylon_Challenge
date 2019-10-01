@@ -2,32 +2,29 @@ package com.example.babylonchallenge.view
 
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-
-import com.example.babylonchallenge.R
 import com.example.babylonchallenge.PostDetailViewModel
 import com.example.babylonchallenge.PostDetailViewModelFactory
+import com.example.babylonchallenge.R
+import com.example.babylonchallenge.data.model.Post
 import com.example.babylonchallenge.di.component.DaggerAppComponent
 import com.example.babylonchallenge.di.module.AppModule
-import com.example.babylonchallenge.data.model.Post
-import com.example.babylonchallenge.data.model.comments.Comments
-import com.example.babylonchallenge.data.model.users.Users
 import kotlinx.android.synthetic.main.fragment_post_info_user.*
 import javax.inject.Inject
 
 
-class PostInfoUserFragment : Fragment() {
+class PostDetailFragment : Fragment() {
 
     @Inject
     lateinit var postDetailViewModelFactory: PostDetailViewModelFactory
     private lateinit var postDetailViewModel: PostDetailViewModel
 
+    lateinit var post: Post
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -42,35 +39,26 @@ class PostInfoUserFragment : Fragment() {
             .build()
             .inject(this)
 
-        val postIdfromBundle = arguments?.getInt("postId")
-        postDetailViewModel = ViewModelProviders.of(this,postDetailViewModelFactory).get(PostDetailViewModel::class.java)
-        if (postIdfromBundle != null) {
-            postDetailViewModel.individualPost(postIdfromBundle)
-        }
-        postDetailViewModel.userpostinfo.observe(this,Observer<List<Post>>{
-            post->
-            tv_postTitle.text = post[0].title
-            tv_postBody.text = post[0].body
-        })
+        post = arguments!!.getParcelable("post")!!
+        tvPostTitle.text = post.title
+        tvPostBody.text = post.body
 
-        val userIdFromBundle = arguments?.getInt("userId")
-        if (userIdFromBundle != null) {
-            postDetailViewModel.getUserId(userIdFromBundle)
-        }
-        postDetailViewModel.userIdinfo.observe(this,Observer<List<Users>>{
-            username->
-            tv_authorName.text = username[0].name
-        })
-//
 
-        if (postIdfromBundle != null) {
-            postDetailViewModel.getComments(postIdfromBundle)
-        }
-        postDetailViewModel.commentinfo.observe(this,Observer<List<Comments>>{
-            numOfcomments->
-            tv_comments.text = numOfcomments.size.toString()
-        })
+        postDetailViewModel = ViewModelProviders.of(this, postDetailViewModelFactory)
+            .get(PostDetailViewModel::class.java)
 
+
+        postDetailViewModel.usersLiveData.observe(this, Observer<String> { username ->
+            tvAuthorName.text = username
+        })
+        postDetailViewModel.getUserName(post.userId)
+
+        postDetailViewModel.numberOfComments.observe(
+            this,
+            Observer<Int> { numberOfComments ->
+                tv_comments.text = numberOfComments.toString()
+            })
+        postDetailViewModel.getComments(post.id)
 
     }
 

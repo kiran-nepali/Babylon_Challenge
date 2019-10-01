@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     private fun displayPostFragment(){
         val fragmentManager:FragmentManager = supportFragmentManager
         val fragmentTransaction:FragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.fragmentContainer,PostFragment())
+        fragmentTransaction.add(R.id.fragmentContainer,PostsFragment())
             .commit()
     }
 }

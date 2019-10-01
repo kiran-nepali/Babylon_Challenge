@@ -1,18 +1,14 @@
 package com.example.babylonchallenge.data.repository
 
 import com.example.babylonchallenge.data.model.Post
-import com.example.babylonchallenge.data.model.comments.Comments
-import com.example.babylonchallenge.data.model.users.Users
-import io.reactivex.Observable
+import com.example.babylonchallenge.data.model.comments.Comment
+import com.example.babylonchallenge.data.model.users.User
 import io.reactivex.Single
 
-interface PostRepository{
-    fun getPosts() : Single<List<Post>>
+interface PostRepository {
+    fun getPosts(): Single<List<Post>>
 
-    fun getPostInfo(id: Int) : Single<List<Post>>
+    fun getUsers(id: Int): Single<List<User>>
 
-    fun getUserInfo(id: Int) : Single<List<Users>>
-
-
-    fun getNumOfComments(postId: Int): Single<List<Comments>>
+    fun getComments(postId: Int): Single<List<Comment>>
 }

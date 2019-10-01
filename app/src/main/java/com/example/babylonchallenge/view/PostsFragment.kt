@@ -13,14 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.babylonchallenge.PostViewModel
 import com.example.babylonchallenge.PostViewModelFactory
 import com.example.babylonchallenge.R
+import com.example.babylonchallenge.data.model.Post
 import com.example.babylonchallenge.di.component.DaggerAppComponent
 import com.example.babylonchallenge.di.module.AppModule
-import com.example.babylonchallenge.data.model.Post
 import kotlinx.android.synthetic.main.fragment_post.*
 import javax.inject.Inject
 
 
-class PostFragment : Fragment() {
+class PostsFragment : Fragment() {
 
     @Inject
     lateinit var postViewModelFactory: PostViewModelFactory
@@ -45,19 +45,20 @@ class PostFragment : Fragment() {
 
         viewModel = ViewModelProviders.of(this, postViewModelFactory).get(PostViewModel::class.java)
         viewModel.postData.observe(this, Observer<List<Post>> { posts ->
+            btnRetry.visibility = View.GONE
             displayPosts(posts)
         })
         viewModel.errors.observe(this, Observer {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            btnRetry.visibility = View.VISIBLE
         })
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        rvPosts.layoutManager = LinearLayoutManager(context)
         postAdapter = PostAdapter(object : PostClickListener {
             override fun onPostClicked(post: Post) {
                 val fragmentManager = activity?.supportFragmentManager
                 val transaction = fragmentManager?.beginTransaction()
                 val args = Bundle()
-                args.putInt("postId", post.id)
-                args.putInt("userId", post.userId)
+                args.putParcelable("post", post)
                 val userPostFragment = PostDetailFragment()
                 userPostFragment.arguments = args
                 transaction?.replace(R.id.fragmentContainer, userPostFragment)
@@ -65,9 +66,23 @@ class PostFragment : Fragment() {
                     ?.commit()
             }
         })
-        recyclerView.adapter = postAdapter
+
+        viewModel.loadingLiveData.observe(this, Observer { showProgressbar ->
+            if (showProgressbar) {
+                progressbar.visibility = View.VISIBLE
+            } else {
+                progressbar.visibility = View.GONE
+            }
+        })
+        btnRetry.setOnClickListener {
+            btnRetry.visibility = View.GONE
+            viewModel.getPosts()
+        }
+        rvPosts.adapter = postAdapter
 
         viewModel.getPosts()
+
+
     }
 
     private fun displayPosts(posts: List<Post>) {

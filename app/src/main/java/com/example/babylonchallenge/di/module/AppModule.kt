@@ -1,7 +1,7 @@
 package com.example.babylonchallenge.di.module
 
-import com.example.babylonchallenge.PostViewModelFactory
 import com.example.babylonchallenge.PostDetailViewModelFactory
+import com.example.babylonchallenge.PostViewModelFactory
 import com.example.babylonchallenge.common.Constants
 import com.example.babylonchallenge.data.repository.PostRepository
 import com.example.babylonchallenge.data.repository.PostRepositoryImpl
@@ -37,7 +37,6 @@ class AppModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()
@@ -46,8 +45,11 @@ class AppModule {
     @Provides
     @Singleton
     fun provideHttPInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor()
+        return HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
     }
+
     @Provides
     @Singleton
     fun providePostRepository(webServices: WebServices): PostRepository {
