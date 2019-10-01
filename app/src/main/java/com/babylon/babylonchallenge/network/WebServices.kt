@@ -1,8 +1,8 @@
 package com.babylon.babylonchallenge.network
 
 import com.babylon.babylonchallenge.data.model.Post
-import com.babylon.babylonchallenge.data.model.comments.Comment
-import com.babylon.babylonchallenge.data.model.users.User
+import com.babylon.babylonchallenge.data.model.Comment
+import com.babylon.babylonchallenge.data.model.User
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

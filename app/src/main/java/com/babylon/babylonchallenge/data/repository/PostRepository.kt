@@ -1,8 +1,8 @@
 package com.babylon.babylonchallenge.data.repository
 
 import com.babylon.babylonchallenge.data.model.Post
-import com.babylon.babylonchallenge.data.model.comments.Comment
-import com.babylon.babylonchallenge.data.model.users.User
+import com.babylon.babylonchallenge.data.model.Comment
+import com.babylon.babylonchallenge.data.model.User
 import io.reactivex.Single
 
 interface PostRepository {
