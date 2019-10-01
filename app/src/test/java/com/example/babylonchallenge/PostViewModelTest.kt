@@ -30,7 +30,6 @@ class PostViewModelTest {
 
     @Mock
     lateinit var repository: PostRepository
-
     private lateinit var postViewModel: PostViewModel
 
 
