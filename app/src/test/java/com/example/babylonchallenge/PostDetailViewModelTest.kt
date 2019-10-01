@@ -3,18 +3,14 @@ package com.example.babylonchallenge
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.babylonchallenge.data.model.Post
-import com.example.babylonchallenge.data.model.comments.Comments
-import com.example.babylonchallenge.data.model.users.Address
-import com.example.babylonchallenge.data.model.users.Company
-import com.example.babylonchallenge.data.model.users.Geo
-import com.example.babylonchallenge.data.model.users.Users
+import com.example.babylonchallenge.data.model.comments.Comment
+import com.example.babylonchallenge.data.model.users.User
 import com.example.babylonchallenge.data.repository.PostRepository
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import io.reactivex.Single
 import org.junit.Before
 
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
@@ -22,7 +18,6 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -30,24 +25,22 @@ class PostUserCommentViewModelTest {
 
     @Rule
     @JvmField
-    var rule:TestRule = InstantTaskExecutorRule()
+    var rule: TestRule = InstantTaskExecutorRule()
 
-    private val postObserver:Observer<List<Post>> = mock()
-    private val errorObserver:Observer<String> = mock()
-    private val userObserver:Observer<List<Users>> = mock()
-    private val commentObserver:Observer<List<Comments>> = mock()
+    private val errorObserver: Observer<String> = mock()
+    private val userObserver: Observer<List<User>> = mock()
+    private val commentObserver: Observer<Int> = mock()
 
     @Mock
-    lateinit var repository:PostRepository
+    lateinit var repository: PostRepository
     private lateinit var postDetailViewModel: PostDetailViewModel
 
     @Before
     fun setUp() {
         this.postDetailViewModel = PostDetailViewModel(repository)
-        postDetailViewModel.userpostinfo.observeForever(postObserver)
-        postDetailViewModel.userIdinfo.observeForever(userObserver)
-        postDetailViewModel.commentinfo.observeForever(commentObserver)
-        postDetailViewModel.errors.observeForever(errorObserver)
+        postDetailViewModel.usersLiveData.observeForever(userObserver)
+        postDetailViewModel.numberOfComments.observeForever(commentObserver)
+        postDetailViewModel.errorsLiveData.observeForever(errorObserver)
     }
 
     @Test
@@ -74,7 +67,8 @@ class PostUserCommentViewModelTest {
     @Test
     fun getPostReturnsError() {
         val errorMessage = "My Error"
-        Mockito.`when`(repository.getPostInfo(1)).thenReturn(Single.error(RuntimeException(errorMessage)))
+        Mockito.`when`(repository.getPostInfo(1))
+            .thenReturn(Single.error(RuntimeException(errorMessage)))
         postDetailViewModel.individualPost(1)
 
         Mockito.verify(postObserver, never()).onChanged(ArgumentMatchers.any())
@@ -82,8 +76,8 @@ class PostUserCommentViewModelTest {
     }
 
     @Test
-    fun getUserReturnsEmptylist(){
-        Mockito.`when`(repository.getUserInfo(1)).thenReturn(Single.just(emptyList()))
+    fun getUserReturnsEmptylist() {
+        Mockito.`when`(repository.getUsers(1)).thenReturn(Single.just(emptyList()))
         postDetailViewModel.getUserId(1)
 
         Mockito.verify(userObserver).onChanged(emptyList())
@@ -91,36 +85,46 @@ class PostUserCommentViewModelTest {
     }
 
     @Test
-    fun getUserRetunsData(){
-        val user = mutableListOf(Users(1,"kiran","test","test", (Address("test","test","test","test", Geo(2.2,2.4))),"test","test",
-            Company("test","test","test")
-        ))
-        Mockito.`when`(repository.getUserInfo(1)).thenReturn(Single.just(user))
+    fun getUserRetunsData() {
+        val user = mutableListOf(
+            Users(
+                1,
+                "kiran",
+                "test",
+                "test",
+                (Address("test", "test", "test", "test", Geo(2.2, 2.4))),
+                "test",
+                "test",
+                Company("test", "test", "test")
+            )
+        )
+        Mockito.`when`(repository.getUsers(1)).thenReturn(Single.just(user))
         postDetailViewModel.getUserId(1)
         Mockito.verify(userObserver).onChanged(user)
         Mockito.verify(errorObserver, never()).onChanged(ArgumentMatchers.any())
     }
 
     @Test
-    fun getCommentEmptyList(){
-        Mockito.`when`(repository.getNumOfComments(1)).thenReturn(Single.just(emptyList()))
+    fun getCommentEmptyList() {
+        Mockito.`when`(repository.getComments(1)).thenReturn(Single.just(emptyList()))
         postDetailViewModel.getComments(1)
         Mockito.verify(commentObserver).onChanged(emptyList())
     }
 
     @Test
-    fun getCommentData(){
-        val comment = mutableListOf(Comments(1,2,"test","test","test"))
-        Mockito.`when`(repository.getNumOfComments(1)).thenReturn(Single.just(comment))
+    fun getCommentData() {
+        val comment = mutableListOf(Comments(1, 2, "test", "test", "test"))
+        Mockito.`when`(repository.getComments(1)).thenReturn(Single.just(comment))
         postDetailViewModel.getComments(1)
         Mockito.verify(commentObserver).onChanged(comment)
         Mockito.verify(errorObserver, never()).onChanged(ArgumentMatchers.any())
     }
 
     @Test
-    fun getCommentError(){
+    fun getCommentError() {
         val errormsg = "Error"
-        Mockito.`when`(repository.getNumOfComments(1)).thenReturn(Single.error(java.lang.RuntimeException(errormsg)))
+        Mockito.`when`(repository.getComments(1))
+            .thenReturn(Single.error(java.lang.RuntimeException(errormsg)))
         postDetailViewModel.getComments(1)
         Mockito.verify(commentObserver, never()).onChanged(ArgumentMatchers.any())
         Mockito.verify(errorObserver).onChanged(errormsg)

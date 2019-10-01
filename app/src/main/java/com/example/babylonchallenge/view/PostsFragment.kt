@@ -58,7 +58,7 @@ class PostFragment : Fragment() {
                 val args = Bundle()
                 args.putInt("postId", post.id)
                 args.putInt("userId", post.userId)
-                val userPostFragment = PostInfoUserFragment()
+                val userPostFragment = PostDetailFragment()
                 userPostFragment.arguments = args
                 transaction?.replace(R.id.fragmentContainer, userPostFragment)
                     ?.addToBackStack(null)
