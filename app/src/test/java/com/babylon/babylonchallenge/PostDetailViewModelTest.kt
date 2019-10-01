@@ -2,8 +2,8 @@ package com.babylon.babylonchallenge
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.babylon.babylonchallenge.data.model.comments.Comment
-import com.babylon.babylonchallenge.data.model.users.User
+import com.babylon.babylonchallenge.data.model.Comment
+import com.babylon.babylonchallenge.data.model.User
 import com.babylon.babylonchallenge.data.repository.PostRepository
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
